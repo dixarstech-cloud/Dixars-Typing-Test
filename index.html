@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dixars Typing Test</title>
+<meta name="theme-color" content="#0f1115">
+<meta name="description" content="Practice typing, improve your speed, and race in real time with Dixars Typing Test.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root, [data-theme="dark"] {
+    --bg: #0f1115; --card: #171a21; --card-2: #1e222b;
+    --text: #e6e8ee; --muted: #8b93a3; --dim: #565d6d;
+    --accent: #6ee7a0; --accent-dim: rgba(110,231,160,.15);
+    --danger: #f26d6d; --border: #2a2f3a;
+  }
+  [data-theme="light"] {
+    --bg: #f4f5f8; --card: #ffffff; --card-2: #eceef3;
+    --text: #1b1e27; --muted: #5b6373; --dim: #9aa1b0;
+    --accent: #129e58; --accent-dim: rgba(18,158,88,.12);
+    --danger: #d94f4f; --border: #dde1e8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh; transition: background .25s;
+  }
+  .app { max-width: 820px; margin: 0 auto; padding: 20px 24px 60px; }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px;
+  }
+
+  /* ---------- top nav ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; gap: 18px; flex-wrap: wrap; }
+  .logo { font-size: 21px; font-weight: 750; letter-spacing: -.7px; user-select: none; white-space: nowrap; }
+  .logo span { color: var(--accent); }
+  .nav {
+    display: flex; gap: 5px; padding: 5px;
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.14), inset 0 1px rgba(255,255,255,.035);
+    backdrop-filter: blur(16px);
+  }
+  .nav button {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; border: 1px solid transparent; color: var(--muted); font-size: 13px;
+    padding: 9px 13px; border-radius: 10px; transition: all .2s;
+  }
+  .nav button svg { width: 16px; height: 16px; flex: 0 0 auto; opacity: .75; }
+  .nav button:hover { color: var(--text); background: var(--card-2); }
+  .nav button.on {
+    background: linear-gradient(135deg, var(--accent-dim), rgba(110,231,160,.035));
+    border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+    color: var(--accent); font-weight: 650;
+    box-shadow: inset 0 0 18px rgba(110,231,160,.07), 0 0 16px rgba(110,231,160,.06);
+  }
+  .nav button.on svg { opacity: 1; filter: drop-shadow(0 0 5px var(--accent)); }
+
+  /* ---------- screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+
+  /* ---------- home ---------- */
+  .hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    text-align: center; padding: 54px 24px 42px; margin-bottom: 24px;
+    border: 1px solid var(--border); border-radius: 22px;
+    background: radial-gradient(ellipse at 50% -25%, var(--accent-dim), transparent 65%), var(--card);
+    box-shadow: 0 18px 60px rgba(0,0,0,.14);
+  }
+  .hero::before {
+    content: ""; position: absolute; z-index: -1; inset: 0; opacity: .22; pointer-events: none;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 38px 38px;
+    mask-image: linear-gradient(to bottom, black, transparent 72%);
+  }
+  .hero::after {
+    content: ""; position: absolute; z-index: -1; width: 240px; height: 240px; border-radius: 50%;
+    left: 50%; bottom: -210px; transform: translateX(-50%);
+    background: var(--accent); filter: blur(90px); opacity: .13;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px; color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    background: var(--accent-dim); border-radius: 99px; padding: 6px 11px;
+    font-size: 11px; font-weight: 650; letter-spacing: 1.1px; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .hero-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .hero h1 { font-size: clamp(36px, 6vw, 54px); letter-spacing: -1.8px; line-height: 1.06; margin-bottom: 12px; }
+  .hero h1 span { color: var(--accent); text-shadow: 0 0 26px rgba(110,231,160,.2); }
+  .hero p { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+  .quick { display: flex; gap: 7px; justify-content: center; margin-bottom: 24px; }
+  .quick .mode { min-width: 68px; background: var(--card); }
+  .bigstart {
+    position: relative; background: var(--accent); color: #0b1410; border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 750; letter-spacing: .2px; padding: 15px 24px;
+    box-shadow: 0 8px 28px rgba(110,231,160,.2); transition: transform .18s, box-shadow .18s, filter .18s;
+  }
+  .bigstart::after { content: "→"; font-size: 18px; margin-left: 12px; vertical-align: -1px; }
+  .bigstart:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 12px 34px rgba(110,231,160,.3); }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 640px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  .qcard { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+  .qcard .v { font-size: 30px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .qcard .k { font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); margin-top: 4px; }
+  .daily-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .daily-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .daily-card h2 { font-size: 18px; }
+  .daily-date, .daily-goal, .daily-passage { color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .daily-passage { margin: 8px 0 14px; }
+  .daily-status { color: var(--accent); font-weight: 600; font-size: 13px; }
+  .daily-card .btn { margin-top: 4px; }
+  .progress-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-top: 20px; }
+  .progress-card h2 { font-size: 16px; margin-bottom: 12px; }
+  .goal-line { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
+  .goal-line input { width: 68px; border: 1px solid var(--border); background: var(--card-2); color: var(--text); border-radius: 7px; padding: 6px; }
+  .goal-line button { border: 1px solid var(--border); color: var(--accent); background: var(--card-2); border-radius: 7px; padding: 6px 10px; }
+  .weekly { color: var(--muted); font-size: 13px; margin-top: 10px; }
+  .record-list { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; margin-top: 12px; }
+  .record-day { background: var(--card-2); border-radius: 8px; padding: 8px 4px; text-align: center; color: var(--dim); font-size: 11px; }
+  .record-day strong { display: block; color: var(--text); font-size: 13px; margin-top: 4px; }
+  .week-day { display: flex; min-height: 68px; flex-direction: column; justify-content: flex-end; align-items: center; gap: 5px; color: var(--dim); font-size: 11px; }
+  .week-bar { width: min(22px, 65%); min-height: 3px; border-radius: 5px 5px 2px 2px; background: var(--accent-dim); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
+  .week-bar.goal-met { background: var(--accent); }
+  .mode-records { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .mode-records span { border: 1px solid var(--border); border-radius: 20px; padding: 4px 8px; color: var(--muted); font-size: 11px; }
+  .install-btn { background: transparent; color: var(--accent); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin-top: 12px; }
+  .race-card { background: linear-gradient(135deg, var(--accent-dim), transparent 65%), var(--card); border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .race-card h2 { font-size: 18px; margin-bottom: 6px; }
+  .race-card p { color: var(--muted); font-size: 14px; line-height: 1.55; margin-bottom: 14px; }
+  .race-card .btn { margin-top: 2px; }
+  .race-panel, .race-game-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+  .race-panel h1, .race-game-panel h1 { font-size: 25px; margin-bottom: 8px; }
+  .race-lede { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .race-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .race-form .option-field:first-child { grid-column: 1 / -1; }
+  .race-form input {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); color: var(--text); font: inherit; padding: 9px 10px;
+  }
+  .race-actions, .race-room-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .race-actions .btn, .race-room-actions .btn { margin-top: 0; }
+  .race-status { min-height: 24px; color: var(--muted); font-size: 13px; margin: 12px 0; }
+  .race-status.error { color: var(--danger); }
+  .race-room, .race-game { margin-top: 18px; }
+  .race-room[hidden], .race-game[hidden] { display: none; }
+  .race-room-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .room-code { color: var(--accent); font: 700 22px/1.2 "SF Mono", "Cascadia Code", Consolas, monospace; letter-spacing: 3px; }
+  .race-roster, .race-leaderboard { display: grid; gap: 8px; margin: 12px 0 18px; }
+  .race-player { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--card-2); border-radius: 9px; padding: 10px 12px; font-size: 14px; }
+  .race-player small { color: var(--muted); }
+  .race-progress { height: 6px; background: var(--bg); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+  .race-progress span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .15s; }
+  .race-game-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .race-clock { color: var(--accent); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .race-passage { position: relative; border: 1px solid var(--border); background: var(--card-2); border-radius: 12px; padding: 20px; min-height: 150px; font: 19px/1.8 "SF Mono", "Cascadia Code", Consolas, monospace; color: var(--dim); word-break: break-word; cursor: text; }
+  .race-passage span.done { color: var(--text); }
+  .race-passage span.bad { color: var(--danger); text-decoration: underline; text-underline-offset: 4px; }
+  .race-passage span.current { border-left: 2px solid var(--accent); margin-left: -2px; }
+  .race-input { position: absolute; opacity: 0; width: 2px; height: 2px; left: 0; top: 0; }
+  .race-countdown { color: var(--accent); min-height: 25px; font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .race-room-options { margin: 12px 0; max-width: 180px; }
+  .race-rematch { margin: 10px 0; color: var(--accent); font-size: 13px; }
+  .race-chat { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px; }
+  .race-chat h3 { font-size: 14px; margin-bottom: 8px; }
+  .race-chat-messages { display: grid; gap: 6px; max-height: 180px; overflow-y: auto; color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .race-chat-messages p { overflow-wrap: anywhere; }
+  .race-chat-form { display: flex; gap: 8px; }
+  .race-chat-form input { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 8px; background: var(--card-2); color: var(--text); padding: 9px; font: inherit; }
+  .race-chat-form button { border: 0; border-radius: 8px; background: var(--accent); color: var(--bg); font-weight: 650; padding: 8px 12px; }
+  .developer-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .developer-meta { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin: 12px 0; color: var(--muted); font-size: 13px; }
+  .developer-code { max-height: 480px; overflow: auto; background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; font: 14px/1.7 "SF Mono", "Cascadia Code", Consolas, monospace; white-space: pre; }
+  .developer-code span { color: var(--dim); }
+  .developer-code span.done { color: var(--text); }
+  .developer-code span.bad { color: var(--danger); text-decoration: underline; }
+  .developer-code span.current { background: var(--accent-dim); border-left: 2px solid var(--accent); }
+  .developer-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .developer-toolbar button, .developer-toolbar select { border: 1px solid var(--border); background: var(--card-2); color: var(--text); border-radius: 8px; padding: 8px 11px; }
+  .account-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 18px; }
+  .account-card h2 { font-size: 18px; margin-bottom: 12px; }
+  .account-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .account-form .option-field:last-child { grid-column: 1 / -1; }
+  .account-form input { width: 100%; border: 1px solid var(--border); background: var(--card-2); color: var(--text); border-radius: 8px; padding: 9px 10px; font: inherit; }
+  .account-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .account-status { color: var(--muted); font-size: 13px; min-height: 20px; margin-top: 10px; }
+  .account-status.error { color: var(--danger); }
+  .leaderboard-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 10px; padding: 10px 4px; border-top: 1px solid var(--border); font-size: 14px; align-items: center; }
+  .leaderboard-row span:first-child { color: var(--dim); }
+  .profile-link { border: 0; background: transparent; color: var(--accent); text-align: left; font: inherit; cursor: pointer; }
+  .leaderboard-controls { display: flex; gap: 8px; margin: 8px 0; }
+  .leaderboard-controls .btn { padding: 7px 12px; font-size: 12px; }
+  .leaderboard-controls button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 520px) {
+    .race-form { grid-template-columns: 1fr; }
+    .race-form .option-field:first-child { grid-column: auto; }
+    .race-panel, .race-game-panel { padding: 18px; }
+    .race-passage { padding: 15px; font-size: 17px; }
+  }
+
+  /* ---------- shared chips ---------- */
+  .modes { display: flex; gap: 8px; margin-bottom: 16px; }
+  .mode { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 6px 16px; border-radius: 8px; font-size: 14px; transition: all .15s; }
+  .mode:hover { color: var(--text); }
+  .mode.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- test ---------- */
+  .stats { display: flex; gap: 32px; margin-bottom: 16px; height: 58px; }
+  .stat { display: flex; flex-direction: column; }
+  .stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--dim); }
+  .stat .value { font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .stat .value.accent { color: var(--accent); }
+  .tbar { flex: 1; align-self: center; height: 6px; background: var(--card-2); border-radius: 3px; overflow: hidden; }
+  .tfill { height: 100%; width: 100%; background: var(--accent); border-radius: 3px; transition: width 1s linear; }
+  .type-card { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; cursor: text; min-height: 170px; }
+  #text { font-family: "SF Mono", "Cascadia Code", Consolas, monospace; font-size: 21px; line-height: 36px; word-break: break-word; user-select: none; }
+  #text span { border-radius: 3px; color: var(--dim); transition: color .08s; }
+  #text span.done { color: var(--text); }
+  #text span.bad { color: var(--danger); text-decoration: underline; text-underline-offset: 4px; }
+  #caret { position: absolute; width: 2.5px; height: 28px; background: var(--accent); border-radius: 2px; transition: left .08s linear, top .08s linear; animation: blink 1.05s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #ghost textarea { position: absolute; opacity: 0; width: 2px; height: 2px; left: 0; top: 0; }
+  .hint { text-align: center; margin-top: 16px; font-size: 13px; color: var(--dim); }
+  .practice-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .practice-options[hidden], .modes[hidden], .daily-test-note[hidden] { display: none; }
+  .daily-test-note { color: var(--accent); font-size: 14px; margin: 0 0 16px; }
+  .option-field { display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 12px; }
+  .option-field select, .option-field textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); color: var(--text); font: inherit; padding: 9px 10px;
+  }
+  .option-field select:disabled { opacity: .6; cursor: not-allowed; }
+  .option-field textarea { min-height: 76px; resize: vertical; }
+  .option-field.custom-text { grid-column: 1 / -1; }
+  .option-field[hidden] { display: none; }
+
+  /* ---------- results ---------- */
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 36px; text-align: center; }
+  .big-wpm { font-size: 84px; font-weight: 700; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+  .big-label { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 6px 0 24px; }
+  .newbest { color: var(--accent); font-weight: 600; }
+  .rrow { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--border); font-size: 15px; max-width: 360px; margin: 0 auto; }
+  .rrow[hidden] { display: none; }
+  .rrow .k { color: var(--muted); }
+  .rrow .v { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .btnrow { display: flex; gap: 12px; justify-content: center; margin-top: 26px; }
+  .btn { border: none; border-radius: 10px; padding: 12px 26px; font-size: 15px; font-weight: 600; transition: filter .15s; }
+  .btn.primary { background: var(--accent); color: var(--bg); }
+  .btn.ghostb { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn:hover { filter: brightness(1.12); }
+  .btn.ghostb:hover { color: var(--text); border-color: var(--text); }
+
+  /* ---------- history ---------- */
+  .hgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 640px) { .hgrid { grid-template-columns: repeat(2, 1fr); } }
+  .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .chart-card h3, .log-card h3 { font-size: 14px; color: var(--muted); font-weight: 600; margin-bottom: 14px; }
+  .log-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .logrow { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 9px 4px; border-top: 1px solid var(--border); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .logrow.head { border-top: none; color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .logrow .r { text-align: right; }
+  .empty { color: var(--dim); text-align: center; padding: 24px 0; font-size: 14px; }
+  .clearbtn { margin-top: 14px; background: transparent; border: 1px solid var(--border); color: var(--danger); border-radius: 8px; padding: 7px 16px; font-size: 13px; }
+  .clearbtn:hover { border-color: var(--danger); }
+  .history-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---------- settings ---------- */
+  .set-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 8px 20px; margin-bottom: 20px; }
+  .srow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid var(--border); }
+  .srow:first-child { border-top: none; }
+  .srow .sk { font-size: 15px; }
+  .srow .sd { font-size: 13px; color: var(--dim); margin-top: 2px; }
+  .switch { position: relative; width: 46px; height: 26px; flex: 0 0 auto; }
+  .switch input { opacity: 0; width: 100%; height: 100%; position: absolute; cursor: pointer; z-index: 1; margin: 0; }
+  .switch i { position: absolute; inset: 0; background: var(--card-2); border: 1px solid var(--border); border-radius: 13px; transition: background .2s; }
+  .switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--muted); transition: all .2s; }
+  .switch input:checked + i { background: var(--accent-dim); border-color: var(--accent); }
+  .switch input:checked + i::after { left: 22px; background: var(--accent); }
+  .seg { display: flex; gap: 4px; background: var(--card-2); border-radius: 8px; padding: 3px; }
+  .seg button { background: transparent; border: none; color: var(--muted); padding: 5px 12px; border-radius: 6px; font-size: 13px; }
+  .seg button.on { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+  input[type=range] { width: 160px; accent-color: var(--accent); }
+
+  .foot { text-align: center; color: var(--dim); font-size: 12px; margin-top: 40px; }
+  @media (max-width: 520px) {
+    .app { padding: 16px 16px 40px; }
+    .hero h1 { font-size: 36px; }
+    .practice-options { grid-template-columns: 1fr; }
+    .option-field.custom-text { grid-column: auto; }
+    .stats { gap: 14px; }
+    .stat .value { font-size: 26px; }
+    .type-card { padding: 20px; }
+    #text { font-size: 19px; line-height: 32px; }
+    .panel { padding: 26px 18px; }
+    .big-wpm { font-size: 68px; }
+    .topbar { gap: 12px; }
+    .nav { width: 100%; justify-content: space-between; gap: 2px; }
+    .nav button { justify-content: center; gap: 5px; padding: 8px 9px; font-size: 12px; }
+    .hero { padding: 42px 16px 34px; border-radius: 17px; }
+    .developer-controls, .account-form { grid-template-columns: 1fr; }
+    .account-form .option-field:last-child { grid-column: auto; }
+    .record-list { gap: 3px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">Dixars <span>Typing Test</span></div>
+    <nav class="nav" id="nav">
+      <button data-s="home" class="on" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-7h6v7"/></svg><span>Home</span>
+      </button>
+      <button data-s="test">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 9h1m3 0h1m3 0h1m-9 3h1m3 0h1m3 0h1m-8 3h6"/></svg><span>Test</span>
+      </button>
+      <button data-s="race">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 20h12M8 20l1-5m6 5-1-5M7 5h10v4a5 5 0 0 1-10 0V5Z"/><path d="M7 7H4v2a4 4 0 0 0 4 4m9-6h3v2a4 4 0 0 1-4 4M10 9h4"/></svg><span>Live race</span>
+      </button>
+      <button data-s="developer" aria-label="Developer practice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 14"/></svg><span>Code</span>
+      </button>
+      <button data-s="account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Profile</span>
+      </button>
+      <button data-s="history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v5h5"/><path d="M4.5 15a8 8 0 1 0 .4-7"/><path d="M12 7v5l3 2"/></svg><span>History</span>
+      </button>
+      <button data-s="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.1.9-1.1 1.9-1.4-.5a8 8 0 0 1-1.7 1l-.2 1.5h-2.2l-.3-1.5a8 8 0 0 1-1.8-.7l-1.3.8-1.6-1.6.8-1.3a8 8 0 0 1-.7-1.8l-1.5-.3v-2.2l1.5-.3a8 8 0 0 1 .7-1.8l-.8-1.3 1.6-1.6 1.3.8a8 8 0 0 1 1.8-.7l.3-1.5h2.2l.3 1.5a8 8 0 0 1 1.7.7l1.4-.8 1.1 1.9-1.1.9"/></svg><span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- 1 · HOME -->
+  <section class="screen active" id="s-home">
+    <div class="hero">
+      <div class="hero-tag">Dixars speed lab <span>· ready to run</span></div>
+      <h1>How fast can <span>you</span> type?</h1>
+      <p>Race the clock, chase your personal best.</p>
+      <div class="quick modes" id="homeModes">
+        <button class="mode" data-t="15">15s</button>
+        <button class="mode on" data-t="60">60s</button>
+        <button class="mode" data-t="120">120s</button>
+      </div>
+      <button class="bigstart" id="startBtn">start typing test</button>
+    </div>
+    <section class="daily-card" aria-labelledby="dailyTitle">
+      <div class="daily-head">
+        <div>
+          <h2 id="dailyTitle">Daily challenge</h2>
+          <div class="daily-date" id="dailyDate"></div>
+        </div>
+        <div class="daily-status" id="dailyStatus" aria-live="polite"></div>
+      </div>
+      <div class="daily-goal" id="dailyGoal"></div>
+      <p class="daily-passage" id="dailyPassage"></p>
+      <button class="btn primary" id="dailyStart">start today’s challenge</button>
+    </section>
+    <section class="race-card" aria-labelledby="raceCardTitle">
+      <h2 id="raceCardTitle">Live race</h2>
+      <p>Challenge friends in synchronized 30, 60, or 120-second typing races. Create a room and share its invite.</p>
+      <button class="btn primary" id="homeRaceBtn">open race lobby</button>
+    </section>
+    <div class="cards">
+      <div class="qcard"><div class="v" id="hBest">0</div><div class="k">best wpm</div></div>
+      <div class="qcard"><div class="v" id="hAvg">0</div><div class="k">average wpm</div></div>
+      <div class="qcard"><div class="v" id="hTests">0</div><div class="k">tests taken</div></div>
+      <div class="qcard"><div class="v" id="hAcc">–</div><div class="k">avg accuracy</div></div>
+    </div>
+    <section class="progress-card">
+      <h2>Your weekly progress</h2>
+      <div class="goal-line">Daily WPM goal <input id="wpmGoal" type="number" min="1" max="300" value="40" aria-label="Daily WPM goal"><button id="saveGoal">save goal</button></div>
+      <div class="weekly" id="weeklySummary"></div>
+      <div class="record-list" id="weeklyChart" aria-label="Typing results from the last seven days"></div>
+      <button class="install-btn" id="installApp" hidden>install app</button>
+    </section>
+  </section>
+
+  <!-- LIVE RACE -->
+  <section class="screen" id="s-race">
+    <div class="race-panel">
+      <h1>Live typing race</h1>
+      <p class="race-lede">Race friends in real time. The host runs a small server, and everyone opens this page through that server’s address.</p>
+      <div id="raceJoinControls">
+        <div class="race-form">
+          <label class="option-field">Display name
+            <input class="race-name" id="raceName" maxlength="18" autocomplete="nickname" placeholder="Your name">
+          </label>
+          <label class="option-field">Room code to join
+            <input class="race-code" id="raceCodeInput" maxlength="5" autocomplete="off" placeholder="e.g. 7KQ2M">
+          </label>
+        </div>
+        <div class="race-actions">
+          <button class="btn primary" id="createRaceBtn">create room</button>
+          <button class="btn ghostb" id="joinRaceBtn">join room</button>
+        </div>
+      </div>
+      <div class="race-status" id="raceStatus" role="status" aria-live="polite">Connecting is available when the app is opened from the race server.</div>
+      <div class="race-room" id="raceRoom" hidden>
+        <div class="race-room-head">
+          <div><small>ROOM CODE</small><div class="room-code" id="raceRoomCode"></div></div>
+          <div id="raceRoomPhase"></div>
+        </div>
+        <button class="btn ghostb" id="copyRaceInvite" type="button">copy invite link</button>
+        <label class="option-field race-room-options" id="raceDurationField">Race duration
+          <select id="raceDuration">
+            <option value="30">30 seconds</option>
+            <option value="60" selected>60 seconds</option>
+            <option value="120">120 seconds</option>
+          </select>
+        </label>
+        <div class="race-rematch" id="raceRematch" hidden></div>
+        <div class="race-roster" id="raceRoster"></div>
+        <div class="race-room-actions">
+          <button class="btn primary" id="startRaceBtn" hidden>start 60-second race</button>
+          <button class="btn ghostb" id="leaveRaceBtn">leave room</button>
+        </div>
+      </div>
+      <div class="race-game" id="raceGame" hidden>
+        <div class="race-game-panel">
+          <div class="race-game-top">
+            <h2>Race passage</h2>
+            <div class="race-clock" id="raceClock">60</div>
+          </div>
+          <div class="race-countdown" id="raceCountdown"></div>
+          <div class="race-passage" id="racePassage" tabindex="0" aria-label="Click here and type the race passage"></div>
+          <textarea class="race-input" id="raceInput" aria-label="Typing input" autocapitalize="off" autocomplete="off" spellcheck="false"></textarea>
+          <div class="race-leaderboard" id="raceLeaderboard" aria-live="polite"></div>
+          <section class="race-chat" id="raceChat">
+            <h3>Race chat</h3>
+            <div class="race-chat-messages" id="raceChatMessages" aria-live="polite"></div>
+            <form class="race-chat-form" id="raceChatForm">
+              <input id="raceChatInput" maxlength="240" autocomplete="off" placeholder="Send a message..." aria-label="Race chat message">
+              <button type="submit">send</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEVELOPER PRACTICE -->
+  <section class="screen" id="s-developer">
+    <div class="race-panel">
+      <h1>Developer typing lab</h1>
+      <p class="race-lede">Practice 70 original code samples across seven languages. Each has exactly 500 lines; the short functional example is followed by generated practice-comment lines.</p>
+      <div class="developer-controls">
+        <label class="option-field">Programming language<select id="developerLanguage"></select></label>
+        <label class="option-field">Example program<select id="developerProgram"></select></label>
+      </div>
+      <div class="developer-toolbar">
+        <button id="developerStart">start / restart</button>
+        <button id="developerPrev">previous 50 lines</button>
+        <button id="developerNext">next 50 lines</button>
+        <select id="developerSize" aria-label="Lines in each practice round">
+          <option value="25">25 lines per round</option>
+          <option value="50" selected>50 lines per round</option>
+          <option value="100">100 lines per round</option>
+        </select>
+      </div>
+      <div class="developer-meta">
+        <span id="developerDescription"></span>
+        <span id="developerProgress"></span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="label">time</span><span class="value" id="developerTime">0</span></div>
+        <div class="stat"><span class="label">wpm</span><span class="value accent" id="developerWpm">0</span></div>
+        <div class="stat"><span class="label">accuracy</span><span class="value" id="developerAccuracy">100%</span></div>
+      </div>
+      <div class="developer-code" id="developerCode" tabindex="0" aria-label="Click and type the developer program"></div>
+      <textarea class="race-input" id="developerInput" aria-label="Developer practice typing input" autocapitalize="off" autocomplete="off" spellcheck="false"></textarea>
+      <p class="hint">Type the code as shown. Press Backspace to correct mistakes. Each example has 500 lines.</p>
+    </div>
+  </section>
+
+  <!-- ACCOUNT AND LEADERBOARD -->
+  <section class="screen" id="s-account">
+    <section class="account-card">
+      <h2 id="accountTitle">Player profile</h2>
+      <p class="race-lede">Create an account to save your public race profile and appear on the leaderboard.</p>
+      <div id="accountForm">
+        <div class="account-form">
+          <label class="option-field">Username
+            <input id="accountUsername" maxlength="20" autocomplete="username" placeholder="3–20 letters, numbers, or underscores">
+          </label>
+          <label class="option-field">Display name
+            <input id="accountDisplayName" maxlength="18" autocomplete="nickname" placeholder="Name shown to others">
+          </label>
+          <label class="option-field">Password
+            <input id="accountPassword" type="password" maxlength="200" autocomplete="new-password" placeholder="At least 10 characters">
+          </label>
+        </div>
+        <button class="btn ghostb" id="editProfileBtn" type="button" hidden>edit profile</button>
+        <div class="account-actions" id="profileEditActions" hidden>
+          <button class="btn primary" id="saveProfileBtn" type="button">save profile</button>
+          <button class="btn ghostb" id="cancelProfileBtn" type="button">cancel</button>
+        </div>
+        <div class="account-actions">
+          <button class="btn primary" id="registerBtn">create account</button>
+          <button class="btn ghostb" id="loginBtn">sign in</button>
+        </div>
+      </div>
+      <div class="account-actions" id="signedInActions" hidden>
+        <button class="btn ghostb" id="logoutBtn">sign out</button>
+      </div>
+      <div class="account-status" id="accountStatus" role="status" aria-live="polite">Accounts are stored on this race server.</div>
+    </section>
+    <section class="account-card">
+      <h2>Public leaderboard</h2>
+      <p class="race-lede">Best authenticated race WPM, updated after completed races.</p>
+      <div id="leaderboardList"></div>
+    </section>
+  </section>
+
+  <!-- 2 · TEST -->
+  <section class="screen" id="s-test">
+    <div class="modes" id="modes">
+      <button class="mode" data-t="15">15s</button>
+      <button class="mode on" data-t="60">60s</button>
+      <button class="mode" data-t="120">120s</button>
+    </div>
+    <p class="daily-test-note" id="dailyTestNote" hidden>Daily challenge · type today’s passage for 60 seconds. Reach 30 WPM with at least 90% accuracy.</p>
+    <div class="practice-options">
+      <label class="option-field">Practice type
+        <select id="practiceMode">
+          <option value="quotes">Quotes</option>
+          <option value="words">Words only</option>
+          <option value="lesson">Typing lesson</option>
+          <option value="punctuation">Punctuation</option>
+          <option value="numbers">Numbers and symbols</option>
+          <option value="custom">Custom text</option>
+        </select>
+      </label>
+      <label class="option-field">Word difficulty
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label class="option-field" id="lessonField" hidden>Typing lesson
+        <select id="lessonSelect">
+          <option value="home">Home row</option>
+          <option value="top">Top row</option>
+          <option value="bottom">Bottom row</option>
+          <option value="punctuation">Punctuation</option>
+          <option value="numbers">Number row</option>
+        </select>
+      </label>
+      <label class="option-field" id="specialModeField" hidden>Practice focus
+        <select id="specialModeSelect">
+          <option value="punctuation">Punctuation</option>
+          <option value="numbers">Numbers and symbols</option>
+        </select>
+      </label>
+      <label class="option-field custom-text" id="customTextField" hidden>Paste or type your practice text
+        <textarea id="customText" maxlength="3000" placeholder="Enter at least a few words to practice..."></textarea>
+      </label>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="label">time</span><span class="value" id="time" aria-live="polite">60</span></div>
+      <div class="stat"><span class="label">wpm</span><span class="value accent" id="wpm">0</span></div>
+      <div class="stat"><span class="label">accuracy</span><span class="value" id="acc">100%</span></div>
+      <div class="tbar"><div class="tfill" id="tfill"></div></div>
+    </div>
+    <div class="type-card" id="card">
+      <div id="text" aria-label="Typing passage"></div>
+      <div id="caret"></div>
+      <div id="ghost"><textarea id="input" autocapitalize="off" autocomplete="off" spellcheck="false"></textarea></div>
+    </div>
+    <div class="hint">click the text and start typing — backspace to correct mistakes</div>
+  </section>
+
+  <!-- 3 · RESULTS -->
+  <section class="screen" id="s-results">
+    <div class="panel">
+      <div class="big-wpm" id="rWpm">0</div>
+      <div class="big-label">words per minute <span class="newbest" id="newBest"></span></div>
+      <div class="rrow"><span class="k">accuracy</span><span class="v" id="rAcc">0%</span></div>
+      <div class="rrow"><span class="k">correct keystrokes</span><span class="v" id="rOk">0</span></div>
+      <div class="rrow"><span class="k">wrong keystrokes</span><span class="v" id="rBad">0</span></div>
+      <div class="rrow"><span class="k">characters</span><span class="v" id="rChars">0</span></div>
+      <div class="rrow" id="goalResultRow" hidden><span class="k">daily WPM goal</span><span class="v" id="goalResult">—</span></div>
+      <div class="rrow" id="dailyResultRow" hidden><span class="k">daily challenge</span><span class="v" id="dailyResult">—</span></div>
+      <div class="btnrow">
+        <button class="btn primary" id="againBtn">test again</button>
+        <button class="btn ghostb" id="histBtn">view history</button>
+        <button class="btn ghostb" id="homeBtn2">home</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · HISTORY -->
+  <section class="screen" id="s-history">
+    <div class="hgrid">
+      <div class="qcard"><div class="v" id="hsTests">0</div><div class="k">tests</div></div>
+      <div class="qcard"><div class="v" id="hsAvg">0</div><div class="k">avg wpm</div></div>
+      <div class="qcard"><div class="v" id="hsBest">0</div><div class="k">best wpm</div></div>
+      <div class="qcard"><div class="v" id="hsAcc">–</div><div class="k">avg acc</div></div>
+    </div>
+    <div class="chart-card">
+      <h3>wpm over time</h3>
+      <svg id="chart" viewBox="0 0 640 190" width="100%" preserveAspectRatio="none" style="display:block"></svg>
+    </div>
+    <div class="log-card">
+      <h3>recent tests</h3>
+      <div id="logList"></div>
+      <div class="history-actions">
+        <button class="clearbtn" id="exportHist">export CSV</button>
+        <button class="clearbtn" id="clearHist">clear history</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · SETTINGS -->
+  <section class="screen" id="s-settings">
+    <div class="set-card">
+      <div class="srow">
+        <div><div class="sk">Dark theme</div><div class="sd">Easier on the eyes at night</div></div>
+        <label class="switch"><input type="checkbox" id="setTheme" checked><i></i></label>
+      </div>
+      <div class="srow">
+        <div><div class="sk">Keystroke sounds</div><div class="sd">Tiny clicks while you type</div></div>
+        <label class="switch"><input type="checkbox" id="setSound"><i></i></label>
+      </div>
+      <div class="srow">
+        <div><div class="sk">Test text size</div><div class="sd">Bigger letters, less squinting</div></div>
+        <input type="range" id="setSize" min="16" max="28" value="21">
+      </div>
+      <div class="srow">
+        <div><div class="sk">Default duration</div><div class="sd">Used when a test starts</div></div>
+        <div class="seg" id="setDur">
+          <button data-t="15">15s</button><button data-t="60" class="on">60s</button><button data-t="120">120s</button>
+        </div>
+      </div>
+    </div>
+    <div class="set-card">
+      <div class="srow">
+        <div><div class="sk" style="color:var(--danger)">Reset all progress</div><div class="sd">Deletes history and personal best</div></div>
+        <button class="clearbtn" id="resetAll">reset</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">Dixars Typing Test — a vanilla JS typing test · no frameworks, no build step</div>
+</div>
+
+<script src="/developer-programs.js"></script>
+<script>
+/* ================= data ================= */
+const QUOTES = [
+  "The quick brown fox jumps over the lazy dog while the sun sets slowly behind the hills.",
+  "Programming is the art of telling another human what one wants the computer to do.",
+  "Simplicity is the ultimate sophistication, and it takes a lot of hard work to achieve it.",
+  "Every great developer you know got there by solving problems they were unqualified to solve.",
+  "Code is like humor. When you have to explain it, it is probably not that good after all.",
+  "First, solve the problem. Then, write the code, and finally make it fast if you must.",
+  "The only way to learn a new programming language is by writing programs in it every day.",
+  "Talk is cheap. Show me the code, and I will tell you what you really believe about quality.",
+  "Measuring programming progress by lines of code is like measuring aircraft progress by weight.",
+  "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging.",
+  "There are only two kinds of languages: the ones people complain about and the ones nobody uses.",
+  "A good programmer is a lazy programmer who would rather write one script than do a task twice.",
+  "Before software can be reusable it first has to be usable, and before that it has to exist.",
+  "The best thing about a boolean is that even if you are wrong, you are only off by a bit.",
+  "I have not failed. I have just found ten thousand ways that will not work at all, ever.",
+  "It works on my machine is the most expensive sentence in the history of software development.",
+  "Stay hungry, stay foolish, and keep typing even when your fingers beg you to stop for the day.",
+  "The future belongs to those who believe in the beauty of their dreams and the speed of their hands."
+];
+const PRACTICE_PASSAGES = {
+  punctuation: [
+    "Can you type: commas, semicolons; parentheses (like these), and quotation marks \"with care\"?",
+    "Practice punctuation: first, write clearly; next, check each phrase; finally, polish your work!",
+    "Ready? Type every symbol: @ # $ % & * + = / \\ _ - and the question mark?"
+  ],
+  numbers: [
+    "Invoice 4821 costs $19.95; order 3 items, apply 12% tax, and pay $67.03.",
+    "The 2026 report lists 8,420 users, 73 projects, 99.8% uptime, and $12,500 in savings.",
+    "Room 7B starts at 9:30; bring 2 forms, 4 photos, and receipt #2048."
+  ]
+};
+const LESSON_PASSAGES = {
+  home: "asdf jkl; asdf jkl; a s d f j k l ; sad fall ask flask dad all",
+  top: "qwer uiop qwer uiop q w e r u i o p quiet power write proper",
+  bottom: "zxcv nm,. zxcv nm,. z x c v n m , . cozy maze mix cave name",
+  punctuation: "Hello, world! How are you? I am ready; let's practice: (one, two).",
+  numbers: "12345 67890 1 2 3 4 5 6 7 8 9 0 2026 42.5 100%"
+};
+const WORD_BANKS = {
+  easy: "cat dog sun moon book tree fish bird home kind play warm happy green water apple smile",
+  medium: "practice improve keyboard rhythm accuracy focus steady progress challenge discover create",
+  hard: "algorithm synchronize architecture nuance juxtaposition ambiguous conscientious perseverance"
+};
+const DAILY_PASSAGES = [
+  "Small steps taken consistently can lead to remarkable progress. Focus on accuracy first, find a comfortable rhythm, and let speed grow with practice.",
+  "A clear goal turns practice into progress. Stay patient with each keystroke, learn from small mistakes, and keep moving forward one word at a time.",
+  "Good habits are built through steady effort. Take a breath, relax your hands, and give each sentence your attention as you improve your typing."
+];
+const DAILY_GOAL_WPM = 30, DAILY_GOAL_ACCURACY = 90, DAILY_DURATION = 60;
+
+/* ================= persistence ================= */
+const store = {
+  get history() { try { return JSON.parse(localStorage.getItem("kd_history")) || []; } catch { return []; } },
+  set history(v) { localStorage.setItem("kd_history", JSON.stringify(v)); },
+  get best() { return Number(localStorage.getItem("kd_best") || 0); },
+  set best(v) { localStorage.setItem("kd_best", v); },
+  get settings() { try { return JSON.parse(localStorage.getItem("kd_settings")) || {}; } catch { return {}; } },
+  set settings(v) { localStorage.setItem("kd_settings", JSON.stringify(v)); },
+  get daily() { try { return JSON.parse(localStorage.getItem("kd_daily")) || {}; } catch { return {}; } },
+  set daily(v) { localStorage.setItem("kd_daily", JSON.stringify(v)); }
+};
+const S = Object.assign({
+  theme: "dark", sound: false, fontSize: 21, duration: 60,
+  mode: "quotes", difficulty: "medium", lesson: "home",
+  playerName: "", goalWpm: 40
+}, store.settings);
+
+/* ================= state ================= */
+const state = {
+  duration: S.duration, text: "", typed: [], index: 0,
+  totalKeys: 0, errors: 0, correctChars: 0,
+  started: false, finished: false, deadline: 0, interval: null,
+  dailyChallenge: false, dailyDate: "", recordMode: ""
+};
+
+/* ================= dom ================= */
+const $ = id => document.getElementById(id);
+const textEl = $("text"), caretEl = $("caret"), card = $("card"), input = $("input");
+const practiceMode = $("practiceMode"), difficulty = $("difficulty"), customText = $("customText");
+const race = {
+  socket: null, playerId: null, roomCode: "", hostId: "", players: [],
+  phase: "disconnected", text: "", typed: [], index: 0,
+  totalKeys: 0, errors: 0, correctChars: 0,
+  startAt: 0, endAt: 0, duration: 60, rematchVotes: [],
+  chat: [], clock: null, pendingAction: "", leaving: false, lastSent: 0
+};
+
+/* ================= router ================= */
+let currentScreen = "home";
+function go(name) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $("s-" + name).classList.add("active");
+  document.querySelectorAll("#nav button").forEach(b => {
+    const active = b.dataset.s === name;
+    b.classList.toggle("on", active);
+    if (active) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
+  });
+  currentScreen = name;
+  if (name === "test") {
+    if (!state.dailyChallenge) state.duration = S.duration;
+    applySettings();
+    reset();
+    input.focus();
+  }
+  if (name !== "test" && name !== "results") {
+    state.dailyChallenge = false;
+    state.dailyDate = "";
+    applySettings();
+  }
+  if (name === "history") renderHistory();
+  if (name === "home") renderHome();
+  if (name === "account") loadAccount();
+  if (name === "developer") initializeDeveloperScreen();
+  if (name === "race" && location.search) {
+    const invite = new URLSearchParams(location.search).get("room");
+    if (invite && !$("raceCodeInput").value) $("raceCodeInput").value = invite.toUpperCase().slice(0, 5);
+  }
+  window.scrollTo(0, 0);
+}
+
+function setRaceStatus(message, isError = false) {
+    $("raceStatus").textContent = message;
+    $("raceStatus").classList.toggle("error", isError);
+  }
+
+  function raceSend(message) {
+    if (race.socket && race.socket.readyState === WebSocket.OPEN) {
+      race.socket.send(JSON.stringify(message));
+      return true;
+    }
+    return false;
+  }
+
+  function startRaceConnection(action) {
+    const name = $("raceName").value.trim().slice(0, 18);
+    if (!name) {
+      setRaceStatus("Enter a display name first.", true);
+      $("raceName").focus();
+      return;
+    }
+    const request = { ...action, name };
+    if (race.socket && race.socket.readyState === WebSocket.OPEN) {
+      raceSend(request);
+      return;
+    }
+    if (!["http:", "https:"].includes(location.protocol) || !location.host) {
+      setRaceStatus("Start the race server, then open this app at http://localhost:4173.", true);
+      return;
+    }
+
+    const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+    race.pendingAction = request;
+    race.leaving = false;
+    setRaceStatus("Connecting to race server...");
+    $("createRaceBtn").disabled = true;
+    $("joinRaceBtn").disabled = true;
+    try {
+      const socket = new WebSocket(protocol + "//" + location.host + "/race");
+      race.socket = socket;
+      socket.addEventListener("open", () => {
+        if (race.pendingAction) {
+          raceSend(race.pendingAction);
+          race.pendingAction = "";
+        }
+      });
+      socket.addEventListener("message", event => {
+        let message;
+        try {
+          message = JSON.parse(event.data);
+        } catch {
+          setRaceStatus("Received an unreadable message from the race server.", true);
+          return;
+        }
+        handleRaceMessage(message);
+        if (window.DixarsEnhancements) window.DixarsEnhancements.handleRaceMessage(message);
+      });
+      socket.addEventListener("error", () => {
+        setRaceStatus("Could not connect to the race server. Check that it is running.", true);
+      });
+      socket.addEventListener("close", () => {
+        race.socket = null;
+        $("createRaceBtn").disabled = false;
+        $("joinRaceBtn").disabled = false;
+        if (!race.leaving) {
+          clearInterval(race.clock);
+          race.roomCode = "";
+          race.playerId = "";
+          race.hostId = "";
+          race.players = [];
+          race.phase = "disconnected";
+          $("raceRoom").hidden = true;
+          $("raceGame").hidden = true;
+          $("raceJoinControls").hidden = false;
+          setRaceStatus("Disconnected from the race server. Reconnect to create or join another room.", true);
+        }
+        race.leaving = false;
+      });
+    } catch (error) {
+      $("createRaceBtn").disabled = false;
+      $("joinRaceBtn").disabled = false;
+      setRaceStatus("Could not connect: " + error.message, true);
+    }
+  }
+
+  function renderRacePlayers() {
+    const roster = $("raceRoster");
+    roster.replaceChildren();
+    const count = race.players.length;
+    $("raceRoomPhase").textContent = race.phase === "waiting"
+      ? "Waiting · " + count + "/8 players"
+      : race.phase === "racing" || race.phase === "finishing" ? "Race in progress" : "Race complete";
+    race.players.forEach(player => {
+      const row = document.createElement("div");
+      row.className = "race-player";
+      const identity = document.createElement("span");
+      identity.textContent = player.name + (player.id === race.playerId ? " (you)" : "") + (player.id === race.hostId ? " · host" : "");
+      const score = document.createElement("span");
+      score.textContent = race.phase === "waiting"
+        ? "Ready"
+        : player.wpm + " WPM · " + player.accuracy + "% · " + player.progress + "%" + (player.finished ? " · finished" : "");
+      row.append(identity, score);
+      if (race.phase !== "waiting") {
+        const progress = document.createElement("div");
+        progress.className = "race-progress";
+        const fill = document.createElement("span");
+        fill.style.width = Math.max(0, Math.min(100, player.progress)) + "%";
+        progress.append(fill);
+        row.append(progress);
+      }
+      roster.append(row);
+    });
+    $("raceRoster").hidden = race.phase !== "waiting";
+    $("raceRoom").hidden = !race.roomCode;
+    $("raceJoinControls").hidden = Boolean(race.roomCode);
+    $("startRaceBtn").hidden = race.hostId !== race.playerId ||
+      (race.phase === "waiting" && count < 2) ||
+      !["waiting", "results"].includes(race.phase);
+    $("startRaceBtn").textContent = race.phase === "results" ? "race again" : "start 60-second race";
+    $("leaveRaceBtn").hidden = !race.roomCode;
+  }
+
+  function renderRaceLeaderboard() {
+    const element = $("raceLeaderboard");
+    element.replaceChildren();
+    const elapsed = Math.max(1, Date.now() - race.startAt);
+    const localWpm = Math.round((race.correctChars / 5) / (elapsed / 60_000));
+    const localAccuracy = race.totalKeys ? Math.round(((race.totalKeys - race.errors) / race.totalKeys) * 100) : 100;
+    const localProgress = race.text.length ? Math.round((race.index / race.text.length) * 100) : 0;
+    const players = race.players.map(player => player.id === race.playerId
+      ? { ...player, wpm: localWpm, accuracy: localAccuracy, progress: localProgress }
+      : player).sort((a, b) => b.wpm - a.wpm || b.progress - a.progress);
+    players.forEach((player, index) => {
+      const row = document.createElement("div");
+      row.className = "race-player";
+      const identity = document.createElement("span");
+      identity.textContent = (index + 1) + ". " + player.name + (player.id === race.playerId ? " (you)" : "");
+      const score = document.createElement("span");
+      score.textContent = player.wpm + " WPM · " + player.accuracy + "%";
+      row.append(identity, score);
+      const progress = document.createElement("div");
+      progress.className = "race-progress";
+      const fill = document.createElement("span");
+      fill.style.width = Math.max(0, Math.min(100, player.progress)) + "%";
+      progress.append(fill);
+      row.append(progress);
+      element.append(row);
+    });
+  }
+
+  function renderRacePassage() {
+    const passage = $("racePassage");
+    passage.replaceChildren();
+    for (let index = 0; index < race.text.length; index++) {
+      const span = document.createElement("span");
+      span.textContent = race.text[index];
+      span.classList.toggle("current", index === race.index);
+      passage.append(span);
+    }
+  }
+
+  function startRaceClock() {
+    clearInterval(race.clock);
+    race.clock = setInterval(() => {
+      const now = Date.now();
+      const untilStart = race.startAt - now;
+      const remaining = Math.max(0, Math.ceil((race.endAt - now) / 1000));
+      $("raceClock").textContent = String(remaining);
+      if (untilStart > 0) {
+        $("raceCountdown").textContent = "Starting in " + Math.ceil(untilStart / 1000) + "...";
+      } else {
+        $("raceCountdown").textContent = remaining > 0
+          ? "Type as much as you can · " + $("raceRoomCode").textContent
+          : "Time is up · waiting for official results...";
+        $("raceInput").focus();
+        renderRaceLeaderboard();
+        if (now >= race.endAt) race.phase = "finishing";
+      }
+    }, 100);
+  }
+
+  function handleRaceMessage(message) {
+    if (message.type === "error") {
+      setRaceStatus(message.message || "The race server reported an error.", true);
+      $("createRaceBtn").disabled = false;
+      $("joinRaceBtn").disabled = false;
+      return;
+    }
+    if (message.playerId) race.playerId = message.playerId;
+    if (message.type === "race-start") {
+      race.phase = "racing";
+      race.text = message.text;
+      race.typed = new Array(race.text.length).fill(null);
+      race.index = 0;
+      race.totalKeys = 0;
+      race.errors = 0;
+      race.correctChars = 0;
+      race.startAt = message.startAt;
+      race.endAt = message.startAt + message.duration;
+      $("raceGame").hidden = false;
+      renderRacePassage();
+      startRaceClock();
+      setRaceStatus("Race starting! Good luck.");
+    } else if (message.type === "race-end") {
+      race.phase = "results";
+      clearInterval(race.clock);
+      race.players = message.players || race.players;
+      $("raceClock").textContent = "0";
+      $("raceCountdown").textContent = "Race complete! Final rankings are shown below.";
+      setRaceStatus("Race complete. Start another round or leave the room.");
+    } else if (message.type === "race-progress") {
+      race.players = message.players || race.players;
+    } else if (message.type === "room-state") {
+      race.phase = message.phase;
+      race.roomCode = message.code;
+      race.hostId = message.hostId;
+      race.players = message.players || [];
+      $("raceRoomCode").textContent = race.roomCode;
+      setRaceStatus(race.phase === "waiting" ? "Share the room code with your friends." : "Players are connected.");
+    }
+
+    if (message.type === "room-state" || message.type === "race-progress" || message.type === "race-start" || message.type === "race-end") {
+      if (message.players) race.players = message.players;
+      renderRacePlayers();
+      if (race.phase === "racing" || race.phase === "results" || race.phase === "finishing") {
+        $("raceGame").hidden = false;
+        renderRaceLeaderboard();
+      }
+    }
+  }
+
+  function handleRaceKey(event) {
+    if (race.phase !== "racing" || Date.now() < race.startAt || Date.now() >= race.endAt) return;
+    if (event.key === "Backspace") {
+      event.preventDefault();
+      if (race.index > 0) {
+        race.index--;
+        if (race.typed[race.index] === race.text[race.index]) race.correctChars--;
+        race.typed[race.index] = null;
+        const span = $("racePassage").children[race.index];
+        span.classList.remove("done", "bad");
+        span.classList.add("current");
+        if (race.index + 1 < race.text.length) $("racePassage").children[race.index + 1].classList.remove("current");
+        sendRaceProgress();
+        renderRaceLeaderboard();
+      }
+      return;
+    }
+    if (event.key.length !== 1 || event.metaKey || event.ctrlKey || event.altKey) return;
+    event.preventDefault();
+    if (race.index >= race.text.length) return;
+    const index = race.index;
+    race.typed[index] = event.key;
+    const correct = event.key === race.text[index];
+    race.totalKeys++;
+    if (correct) race.correctChars++;
+    else race.errors++;
+    const span = $("racePassage").children[index];
+    span.classList.remove("current");
+    span.classList.add(correct ? "done" : "bad");
+    race.index++;
+    if (race.index < race.text.length) $("racePassage").children[race.index].classList.add("current");
+    sendRaceProgress();
+    renderRaceLeaderboard();
+  }
+
+  function sendRaceProgress() {
+    const now = Date.now();
+    if (now - race.lastSent < 90 && race.index < race.text.length) return;
+    race.lastSent = now;
+    raceSend({
+      type: "progress",
+      index: race.index,
+      correctChars: race.correctChars,
+      errors: race.errors,
+      totalKeys: race.totalKeys
+    });
+  }
+
+  function leaveRace() {
+    race.leaving = true;
+    clearInterval(race.clock);
+    raceSend({ type: "leave" });
+    if (race.socket) race.socket.close();
+    race.socket = null;
+    race.roomCode = "";
+    race.playerId = "";
+    race.hostId = "";
+    race.players = [];
+    race.phase = "disconnected";
+    race.text = "";
+    $("raceRoom").hidden = true;
+    $("raceGame").hidden = true;
+    $("raceJoinControls").hidden = false;
+    $("createRaceBtn").disabled = false;
+    $("joinRaceBtn").disabled = false;
+    setRaceStatus("You left the room. Create or join another race.");
+  }
+
+  $("createRaceBtn").addEventListener("click", () => startRaceConnection({ type: "create" }));
+  $("joinRaceBtn").addEventListener("click", () => {
+    const code = $("raceCodeInput").value.trim().toUpperCase();
+    if (!code) {
+      setRaceStatus("Enter a room code first.", true);
+      $("raceCodeInput").focus();
+      return;
+    }
+    startRaceConnection({ type: "join", code });
+  });
+  $("raceCodeInput").addEventListener("input", event => { event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5); });
+  $("startRaceBtn").addEventListener("click", () => raceSend({ type: "start" }));
+  $("leaveRaceBtn").addEventListener("click", leaveRace);
+  $("racePassage").addEventListener("click", () => $("raceInput").focus());
+$("nav").addEventListener("click", e => { const b = e.target.closest("button"); if (b) go(b.dataset.s); });
+$("homeRaceBtn").addEventListener("click", () => go("race"));
+
+/* ================= sound ================= */
+let actx = null;
+function blip(ok) {
+  if (!S.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = "square";
+    o.frequency.value = ok ? 640 + Math.random() * 60 : 170;
+    g.gain.setValueAtTime(0.035, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.05);
+    o.connect(g); g.connect(actx.destination);
+    o.start(); o.stop(actx.currentTime + 0.06);
+  } catch {}
+}
+
+function localDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return year + "-" + month + "-" + day;
+}
+
+function shiftDateKey(key, offset) {
+  const [year, month, day] = key.split("-").map(Number);
+  const date = new Date(year, month - 1, day + offset);
+  return localDateKey(date);
+}
+
+function dailyBasePassage(dateKey = localDateKey()) {
+  const dayNumber = Number(dateKey.replace(/-/g, ""));
+  return DAILY_PASSAGES[dayNumber % DAILY_PASSAGES.length];
+}
+
+function dailyText(dateKey = localDateKey()) {
+  const start = Number(dateKey.replace(/-/g, "")) % DAILY_PASSAGES.length;
+  const passages = DAILY_PASSAGES.slice(start).concat(DAILY_PASSAGES.slice(0, start));
+  return Array.from({ length: 3 }, () => passages.join(" ")).join(" ");
+}
+
+function dailyStreak(records = store.daily, today = localDateKey()) {
+  let current = records[today] && records[today].completed ? today : shiftDateKey(today, -1);
+  let count = 0;
+  while (records[current] && records[current].completed) {
+    count++;
+    current = shiftDateKey(current, -1);
+  }
+  return count;
+}
+
+function renderDailyChallenge() {
+  const dateKey = localDateKey();
+  const records = store.daily;
+  const record = records[dateKey];
+  const streak = dailyStreak(records);
+  const date = new Date(dateKey.split("-").map(Number)[0], Number(dateKey.slice(5, 7)) - 1, Number(dateKey.slice(8)));
+  $("dailyDate").textContent = date.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  $("dailyGoal").textContent = DAILY_DURATION + " seconds · reach " + DAILY_GOAL_WPM + " WPM and " + DAILY_GOAL_ACCURACY + "% accuracy · current streak: " + streak + " day" + (streak === 1 ? "" : "s");
+  $("dailyPassage").textContent = dailyBasePassage(dateKey);
+  if (record && record.completed) {
+    $("dailyStatus").textContent = "Completed · " + record.wpm + " WPM · " + record.acc + "% accuracy";
+    $("dailyStart").textContent = "practice again today";
+  } else if (record && record.attempts) {
+    $("dailyStatus").textContent = "Best today: " + record.bestWpm + " WPM · " + record.bestAcc + "% accuracy";
+    $("dailyStart").textContent = "try today’s challenge again";
+  } else {
+    $("dailyStatus").textContent = "Not completed yet";
+    $("dailyStart").textContent = "start today’s challenge";
+  }
+}
+
+/* ================= test engine ================= */
+function loadQuote() {
+  if (state.dailyChallenge) {
+    state.text = dailyText(state.dailyDate);
+  } else if (S.mode === "custom") {
+    state.text = customText.value.trim() || "Enter your own text above to begin.";
+  } else if (S.mode === "words") {
+    const bank = WORD_BANKS[S.difficulty].split(" ");
+    state.text = Array.from({ length: 320 }, () => bank[Math.floor(Math.random() * bank.length)]).join(" ");
+  } else if (S.mode === "lesson") {
+    state.text = LESSON_PASSAGES[S.lesson] || LESSON_PASSAGES.home;
+  } else if (S.mode === "punctuation" || S.mode === "numbers") {
+    const passages = PRACTICE_PASSAGES[S.mode];
+    state.text = passages[Math.floor(Math.random() * passages.length)];
+  } else {
+    state.text = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  }
+  state.recordMode = state.dailyChallenge ? "daily" : S.mode;
+  state.typed = new Array(state.text.length).fill(null);
+  state.index = 0;
+  textEl.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  for (const ch of state.text) {
+    const s = document.createElement("span");
+    s.textContent = ch;
+    frag.appendChild(s);
+  }
+  textEl.appendChild(frag);
+  moveCaret();
+}
+
+function moveCaret() {
+  const spans = textEl.children;
+  if (!spans.length) return;
+  const el = state.index < spans.length ? spans[state.index] : spans[spans.length - 1];
+  caretEl.style.left = el.offsetLeft - (state.index < spans.length ? 1 : -el.offsetWidth + 1) + "px";
+  caretEl.style.top = el.offsetTop + 4 + "px";
+}
+
+function calcStats() {
+  const elapsedMin = state.started
+    ? Math.min((Date.now() - (state.deadline - state.duration * 1000)) / 60000, state.duration / 60)
+    : 0;
+  const wpm = elapsedMin > 0 ? Math.round((state.correctChars / 5) / elapsedMin) : 0;
+  const acc = state.totalKeys > 0 ? Math.round(((state.totalKeys - state.errors) / state.totalKeys) * 100) : 100;
+  return { wpm, acc };
+}
+
+function tick() {
+  const left = Math.max(0, Math.ceil((state.deadline - Date.now()) / 1000));
+  $("time").textContent = left;
+  $("tfill").style.width = (left / state.duration * 100) + "%";
+  const { wpm, acc } = calcStats();
+  $("wpm").textContent = wpm;
+  $("acc").textContent = acc + "%";
+  if (left <= 0) finish();
+}
+
+function paintChar(i) {
+  const s = textEl.children[i];
+  const t = state.typed[i];
+  s.classList.toggle("done", t !== null && t === state.text[i]);
+  s.classList.toggle("bad", t !== null && t !== state.text[i]);
+}
+
+function handleKey(e) {
+  if (state.finished) return;
+  if (S.mode === "custom" && !customText.value.trim()) {
+    e.preventDefault();
+    customText.focus();
+    return;
+  }
+  if (e.key === "Backspace") {
+    e.preventDefault();
+    if (state.index > 0) {
+      state.index--;
+      if (state.typed[state.index] === state.text[state.index]) state.correctChars--;
+      state.typed[state.index] = null;
+      paintChar(state.index);
+    }
+    moveCaret();
+    return;
+  }
+  if (e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+  e.preventDefault();
+  if (state.index >= state.text.length) return;
+  if (!state.started) start();
+  state.totalKeys++;
+  state.typed[state.index] = e.key;
+  const ok = e.key === state.text[state.index];
+  if (ok) state.correctChars++; else state.errors++;
+  blip(ok);
+  paintChar(state.index);
+  state.index++;
+  if (state.index >= state.text.length && !state.dailyChallenge) loadQuote(); // ordinary tests roll into another quote
+  moveCaret();
+}
+
+function start() {
+  state.started = true;
+  state.deadline = Date.now() + state.duration * 1000;
+  state.interval = setInterval(tick, 250);
+  caretEl.style.animation = "none";
+}
+
+function finish() {
+  state.finished = true;
+  clearInterval(state.interval);
+  caretEl.style.animation = "";
+  const { wpm, acc } = calcStats();
+
+  $("rWpm").textContent = wpm;
+  $("rAcc").textContent = acc + "%";
+  $("rOk").textContent = state.totalKeys - state.errors;
+  $("rBad").textContent = state.errors;
+  $("rChars").textContent = state.correctChars;
+  $("dailyResultRow").hidden = !state.dailyChallenge;
+  if (state.dailyChallenge) {
+    const dateKey = state.dailyDate || localDateKey();
+    const records = store.daily;
+    const previous = records[dateKey] || { attempts: 0, bestWpm: 0, bestAcc: 0, completed: false };
+    const completed = previous.completed || (wpm >= DAILY_GOAL_WPM && acc >= DAILY_GOAL_ACCURACY);
+    records[dateKey] = {
+      attempts: previous.attempts + 1,
+      bestWpm: Math.max(previous.bestWpm, wpm),
+      bestAcc: Math.max(previous.bestAcc, acc),
+      completed,
+      wpm: completed ? (previous.completed ? previous.wpm : wpm) : Math.max(previous.bestWpm, wpm),
+      acc: completed ? (previous.completed ? previous.acc : acc) : Math.max(previous.bestAcc, acc)
+    };
+    store.daily = records;
+    $("dailyResult").textContent = completed
+      ? "Completed! " + wpm + " WPM · " + acc + "% accuracy"
+      : "Not yet — need " + DAILY_GOAL_WPM + " WPM and " + DAILY_GOAL_ACCURACY + "% accuracy";
+  }
+
+  const h = store.history;
+  h.push({ d: Date.now(), wpm, acc, keys: state.totalKeys, err: state.errors, dur: state.duration, mode: state.recordMode || S.mode });
+  store.history = h.slice(-100);
+  if (window.DixarsEnhancements) window.DixarsEnhancements.recordTest({
+    at: Date.now(), wpm, accuracy: acc, mode: state.recordMode || S.mode
+  });
+
+  let nb = "";
+  if (wpm > store.best && state.totalKeys > 10) { store.best = wpm; nb = "— new personal best!"; }
+  $("newBest").textContent = nb;
+  go("results");
+}
+
+function reset() {
+  clearInterval(state.interval);
+  Object.assign(state, { typed: [], index: 0, totalKeys: 0, errors: 0, correctChars: 0, started: false, finished: false, deadline: 0, interval: null });
+  $("time").textContent = state.duration;
+  $("tfill").style.width = "100%";
+  $("wpm").textContent = "0";
+  $("acc").textContent = "100%";
+  loadQuote();
+}
+
+/* ================= home ================= */
+function renderHome() {
+  const h = store.history;
+  const avg = h.length ? Math.round(h.reduce((a, x) => a + x.wpm, 0) / h.length) : 0;
+  const acc = h.length ? Math.round(h.reduce((a, x) => a + x.acc, 0) / h.length) : null;
+  $("hBest").textContent = store.best;
+  $("hAvg").textContent = avg;
+  $("hTests").textContent = h.length;
+  $("hAcc").textContent = acc === null ? "–" : acc + "%";
+  renderDailyChallenge();
+  if (window.DixarsEnhancements) window.DixarsEnhancements.renderProgress();
+}
+$("startBtn").addEventListener("click", () => go("test"));
+$("dailyStart").addEventListener("click", () => {
+  state.dailyChallenge = true;
+  state.dailyDate = localDateKey();
+  state.duration = DAILY_DURATION;
+  go("test");
+});
+
+/* ================= history screen ================= */
+function renderHistory() {
+  const h = store.history;
+  const n = h.length;
+  const avg = n ? Math.round(h.reduce((a, x) => a + x.wpm, 0) / n) : 0;
+  const acc = n ? Math.round(h.reduce((a, x) => a + x.acc, 0) / n) : null;
+  $("hsTests").textContent = n;
+  $("hsAvg").textContent = avg;
+  $("hsBest").textContent = store.best;
+  $("hsAcc").textContent = acc === null ? "–" : acc + "%";
+  drawChart(h.slice(-20));
+  const list = $("logList");
+  if (!n) {
+    list.innerHTML = '<div class="empty">No tests yet — go type something!</div>';
+  } else {
+    let rows = '<div class="logrow head"><span>date</span><span class="r">wpm</span><span class="r">accuracy</span></div>';
+    h.slice(-8).reverse().forEach(x => {
+      const dt = new Date(x.d);
+      const ds = dt.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " +
+                 dt.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+      rows += '<div class="logrow"><span>' + ds + '</span><span class="r">' + x.wpm + '</span><span class="r">' + x.acc + '%</span></div>';
+    });
+    list.innerHTML = rows;
+  }
+}
+
+function drawChart(data) {
+  const svg = $("chart");
+  const W = 640, H = 190, P = 14;
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  if (!data.length) { svg.innerHTML = '<text x="320" y="100" text-anchor="middle" fill="' + css("--dim") + '" font-size="13">Your WPM curve will appear here after your first test</text>'; return; }
+  const vals = data.map(x => x.wpm);
+  const max = Math.max(...vals, 10) * 1.15;
+  const px = i => P + (data.length === 1 ? (W - 2 * P) / 2 : i * (W - 2 * P) / (data.length - 1));
+  const py = v => H - P - (v / max) * (H - 2 * P);
+  const acc = css("--accent"), dim = css("--dim"), border = css("--border");
+  let g = '<line x1="' + P + '" y1="' + (H - P) + '" x2="' + (W - P) + '" y2="' + (H - P) + '" stroke="' + border + '"/>';
+  g += '<line x1="' + P + '" y1="' + P + '" x2="' + (W - P) + '" y2="' + P + '" stroke="' + border + '" stroke-dasharray="3 4"/>';
+  g += '<text x="' + P + '" y="' + (P + 4) + '" fill="' + dim + '" font-size="11">' + Math.round(max) + '</text>';
+  if (data.length > 1) {
+    g += '<polyline fill="none" stroke="' + acc + '" stroke-width="2" stroke-linejoin="round" points="' +
+      vals.map((v, i) => px(i) + "," + py(v)).join(" ") + '"/>';
+  }
+  vals.forEach((v, i) => {
+    g += '<circle cx="' + px(i) + '" cy="' + py(v) + '" r="3.5" fill="' + acc + '"><title>' + v + ' wpm</title></circle>';
+  });
+  g += '<text x="' + (W - P) + '" y="' + (H - 2) + '" text-anchor="end" fill="' + dim + '" font-size="11">latest →</text>';
+  svg.innerHTML = g;
+}
+$("clearHist").addEventListener("click", () => { store.history = []; renderHistory(); });
+$("exportHist").addEventListener("click", () => {
+  const rows = [["date", "wpm", "accuracy", "keys", "errors", "duration"]];
+  store.history.forEach(x => rows.push([
+    new Date(x.d).toISOString(), x.wpm, x.acc, x.keys, x.err, x.dur
+  ]));
+  const csv = rows.map(row => row.map(value => '"' + String(value).replace(/"/g, '""') + '"').join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "dixars-typing-test-history.csv";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+/* ================= settings ================= */
+function applySettings() {
+  document.documentElement.dataset.theme = S.theme;
+  $("setTheme").checked = S.theme === "dark";
+  $("setSound").checked = S.sound;
+  $("setSize").value = S.fontSize;
+  practiceMode.value = S.mode;
+  difficulty.value = S.difficulty;
+  difficulty.disabled = state.dailyChallenge || S.mode !== "words";
+  practiceMode.disabled = state.dailyChallenge;
+  customText.disabled = state.dailyChallenge;
+  $("modes").hidden = state.dailyChallenge;
+  document.querySelector(".practice-options").hidden = state.dailyChallenge;
+  $("dailyTestNote").hidden = !state.dailyChallenge;
+  document.querySelectorAll("#modes .mode").forEach(button => { button.disabled = state.dailyChallenge; });
+  $("customTextField").hidden = S.mode !== "custom";
+  $("lessonField").hidden = S.mode !== "lesson";
+  $("specialModeField").hidden = S.mode !== "punctuation" && S.mode !== "numbers";
+  if ($("lessonSelect")) $("lessonSelect").value = S.lesson || "home";
+  if ($("specialModeSelect")) $("specialModeSelect").value = S.mode === "numbers" ? "numbers" : "punctuation";
+  textEl.style.fontSize = S.fontSize + "px";
+  document.querySelectorAll("#setDur button").forEach(b => b.classList.toggle("on", Number(b.dataset.t) === S.duration));
+  document.querySelectorAll(".modes .mode").forEach(b => b.classList.toggle("on", Number(b.dataset.t) === S.duration));
+}
+$("setTheme").addEventListener("change", e => { S.theme = e.target.checked ? "dark" : "light"; store.settings = S; applySettings(); });
+$("setSound").addEventListener("change", e => { S.sound = e.target.checked; store.settings = S; });
+$("setSize").addEventListener("input", e => { S.fontSize = Number(e.target.value); store.settings = S; textEl.style.fontSize = S.fontSize + "px"; });
+$("setDur").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.duration = Number(b.dataset.t); state.duration = S.duration; store.settings = S; applySettings();
+});
+$("practiceMode").addEventListener("change", e => {
+  S.mode = e.target.value;
+  store.settings = S;
+  applySettings();
+  if (currentScreen === "test") reset();
+});
+$("difficulty").addEventListener("change", e => {
+  S.difficulty = e.target.value;
+  store.settings = S;
+  if (currentScreen === "test" && S.mode === "words") reset();
+});
+$("customText").addEventListener("input", () => {
+  if (S.mode === "custom" && currentScreen === "test" && !state.started) loadQuote();
+});
+$("resetAll").addEventListener("click", () => {
+  if (!confirm("Delete all history, personal best, and daily challenge progress?")) return;
+  localStorage.removeItem("kd_history"); localStorage.removeItem("kd_best"); localStorage.removeItem("kd_daily");
+  renderHome();
+});
+
+/* ================= duration chips (home + test) ================= */
+function bindModes(el) {
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".mode"); if (!b) return;
+    el.querySelectorAll(".mode").forEach(m => m.classList.remove("on"));
+    b.classList.add("on");
+    S.duration = Number(b.dataset.t); state.duration = S.duration; store.settings = S;
+    applySettings();
+    if (el.id === "modes" && currentScreen === "test") reset();
+  });
+}
+bindModes($("modes"));
+bindModes($("homeModes"));
+
+/* ================= results buttons ================= */
+$("againBtn").addEventListener("click", () => go("test"));
+$("histBtn").addEventListener("click", () => go("history"));
+$("homeBtn2").addEventListener("click", () => go("home"));
+
+/* ================= global keys ================= */
+document.addEventListener("keydown", e => {
+  if (window.DixarsEnhancements && window.DixarsEnhancements.handleShortcut(e)) return;
+  if (currentScreen === "results" && e.key === "Enter") { e.preventDefault(); go("test"); return; }
+  if (currentScreen === "test") handleKey(e);
+  if (currentScreen === "race") handleRaceKey(e);
+});
+card.addEventListener("click", () => input.focus());
+window.addEventListener("resize", moveCaret);
+
+/* ================= init ================= */
+applySettings();
+loadQuote();
+renderHome();
+setRaceStatus(location.protocol === "file:"
+  ? "Run the race server and open this app at http://localhost:4173 to play online."
+  : "Create a room or join one with a friend.");
+window.DixarsApp = { $, S, state, store, race, go, startRaceConnection, raceSend, handleRaceMessage,
+  renderRacePlayers, setRaceStatus, renderHome, applySettings, finish, reset,
+  get currentScreen() { return currentScreen; } };
+</script>
+<script src="/enhancements.js"></script>
+</body>
+</html>
